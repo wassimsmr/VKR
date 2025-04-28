@@ -1,0 +1,35 @@
+DIFFERENTIAL EQUATION SOLVER COMPARISON: Harmonic Oscillator: d쾧/dt� + 4y = 0
+================================================================================
+
+Equation: Harmonic Oscillator: d쾧/dt� + 4y = 0
+Domain: (0, 5)
+Boundary Conditions: {'initial_value': 1.0, 'initial_derivative': 0.0}
+
+NEURAL NETWORK MODELS
+--------------------------------------------------------------------------------
+Model           Training Time (s)    Final Loss      L2 Error        L1 Error        Max Error      
+----------------------------------------------------------------------------------------------------
+PINN            10.66                3.580000e-02    6.842036e-01    6.089336e-01    1.002747e+00   
+MLP             11.80                4.225455e-02    6.833780e-01    6.082185e-01    1.000422e+00   
+RNN             79.80                3.068139e-02    6.838656e-01    6.088713e-01    1.001485e+00   
+LSTM            238.91               2.826906e-02    6.838709e-01    6.088372e-01    1.001616e+00   
+Transformer     379.00               2.546780e-01    6.873677e-01    6.116048e-01    1.044539e+00   
+
+CLASSICAL METHODS
+--------------------------------------------------------------------------------
+Method          Solving Time (s)     L2 Error        L1 Error        Max Error      
+------------------------------------------------------------------------------------------
+FDM             0.005567             6.838911e-01    6.087296e-01    1.001864e+00   
+RK1             0.002554             6.840624e-01    6.090423e-01    1.001747e+00   
+RK2             0.003000             6.838900e-01    6.087275e-01    1.001864e+00   
+RK3             0.004565             6.838911e-01    6.087296e-01    1.001864e+00   
+RK4             0.006061             6.838911e-01    6.087296e-01    1.001864e+00   
+RKF45           0.002082             6.838023e-01    6.085400e-01    1.001943e+00   
+
+KEY FINDINGS
+--------------------------------------------------------------------------------
+Best method by L2 error: MLP with error 6.833780e-01
+Fastest neural network: PINN (10.66 seconds)
+Fastest classical method: RKF45 (0.002082 seconds)
+
+Note: For the best trade-off between accuracy and computation time, refer to the 'accuracy_vs_time.png' scatter plot.

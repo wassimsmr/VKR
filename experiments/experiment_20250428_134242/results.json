@@ -1,0 +1,121 @@
+{
+    "equation": "Linear ODE: dy/dt = 1.0*y + 0.0",
+    "domain": [
+        0,
+        2
+    ],
+    "boundary_conditions": {
+        "initial_value": 1.0
+    },
+    "timestamp": "20250428_134242",
+    "models": {
+        "PINN": {
+            "type": "neural_network",
+            "class": "PINN",
+            "params": {
+                "input_dim": 1,
+                "output_dim": 1,
+                "hidden_dims": [
+                    32,
+                    32,
+                    32
+                ],
+                "activation": "<class 'torch.nn.modules.activation.Tanh'>"
+            },
+            "metrics": {
+                "train_loss": 6.866803232696839e-06,
+                "val_loss": null,
+                "training_time": 20.607442617416382
+            },
+            "error_metrics": {
+                "l2_error": 0.0010235297862099325,
+                "l1_error": 0.0008608961366631525,
+                "max_error": 0.0021201272998156995,
+                "relative_l2_error": 0.00027946154981583246,
+                "rmse": 0.0010235297862099325,
+                "mae": 0.0008608961366631525,
+                "mape": 0.025472835791116616,
+                "r2_score": 0.9999996728813975
+            }
+        },
+        "LSTM": {
+            "type": "neural_network",
+            "class": "PhysicsInformedLSTM",
+            "params": {
+                "input_dim": 1,
+                "output_dim": 1,
+                "hidden_dim": 64,
+                "num_layers": 2
+            },
+            "metrics": {
+                "train_loss": 1.994322929022019e-06,
+                "val_loss": null,
+                "training_time": 123.8136579990387
+            },
+            "error_metrics": {
+                "l2_error": 0.0003125371407204436,
+                "l1_error": 0.0002606063435035215,
+                "max_error": 0.0007086248435097531,
+                "relative_l2_error": 8.533421781906956e-05,
+                "rmse": 0.0003125371407204436,
+                "mae": 0.0002606063435035215,
+                "mape": 0.007881696558134204,
+                "r2_score": 0.9999999694994592
+            }
+        },
+        "Transformer": {
+            "type": "neural_network",
+            "class": "PhysicsInformedTransformer",
+            "params": {
+                "input_dim": 1,
+                "output_dim": 1,
+                "d_model": 64,
+                "nhead": 4,
+                "num_layers": 2
+            },
+            "metrics": {
+                "train_loss": 0.44911009073257446,
+                "val_loss": null,
+                "training_time": 202.44733047485352
+            },
+            "error_metrics": {
+                "l2_error": 3.3512716049688422,
+                "l1_error": 2.8122907340774495,
+                "max_error": 7.123605442516618,
+                "relative_l2_error": 0.9150213009885891,
+                "rmse": 3.3512716049688422,
+                "mae": 2.8122907340774495,
+                "mape": 82.40871879075156,
+                "r2_score": -2.5069011478631675
+            }
+        },
+        "FDM": {
+            "type": "numerical",
+            "class": "FDM",
+            "error_metrics": {
+                "l2_error": 7.773575714199295e-13,
+                "l1_error": 5.599036789760703e-13,
+                "max_error": 1.9682033780554775e-12,
+                "relative_l2_error": 2.1224741536298342e-13,
+                "rmse": 7.773575714199295e-13,
+                "mae": 5.599036789760703e-13,
+                "mape": 1.3357357371580338e-11,
+                "r2_score": 1.0
+            }
+        },
+        "FEM": {
+            "type": "numerical",
+            "class": "FEM",
+            "error_metrics": {
+                "l2_error": 3.662506645690013,
+                "l1_error": 3.1955291153738457,
+                "max_error": 7.38905609893065,
+                "relative_l2_error": 0.9999999972696295,
+                "rmse": 3.662506645690013,
+                "mae": 3.1955291153738457,
+                "mape": 99.99999956753216,
+                "r2_score": -3.188525013847376
+            }
+        }
+    }
+}

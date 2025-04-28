@@ -1,0 +1,19 @@
+HARMONIC OSCILLATOR EXPERIMENT RESULTS
+==================================================
+
+Equation: Harmonic Oscillator: d²y/dt² + 2.0²*y = 0
+Domain: (0, 5)
+Boundary Conditions: {'initial_value': 1.0, 'initial_derivative': 0.0}
+Number of Epochs: 3000
+Learning Rate: 0.001
+
+PERFORMANCE METRICS
+--------------------------------------------------
+Model           Training Time (s)    Final Loss      L2 Error        L1 Error        Max Error      
+----------------------------------------------------------------------------------------------------
+MLP             43.79                2.900009e-02    6.842281e-01    6.089042e-01    1.003938e+00   
+PINN            74.27                2.799410e-02    6.842122e-01    6.088646e-01    1.002722e+00   
+RNN             76.86                2.606275e-02    6.841095e-01    6.088024e-01    1.002692e+00   
+LSTM            142.59               1.989847e-02    6.836180e-01    6.084479e-01    1.001943e+00   
+Transformer     243.08               2.136081e-01    6.900953e-01    6.135909e-01    1.063689e+00   
+FDM             N/A                  N/A             6.838911e-01    6.087296e-01    1.001864e+00   
