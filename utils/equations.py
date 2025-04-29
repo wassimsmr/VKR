@@ -466,3 +466,125 @@ class ParametricODE(DifferentialEquation):
         if self.exact_solution_func is None:
             raise NotImplementedError("Exact solution not available for this ODE")
         return self.exact_solution_func(t, self.params, self.initial_conditions)
+
+
+class PartialDifferentialEquation(DifferentialEquation):
+    """Base class for partial differential equations."""
+
+    def __init__(self, name="Generic PDE"):
+        """
+        Initialize the partial differential equation.
+
+        Args:
+            name (str): Name of the PDE
+        """
+        super(PartialDifferentialEquation, self).__init__(name=name)
+
+    def __call__(self, x, y, u, u_x=None, u_y=None, u_xx=None, u_yy=None, u_xy=None):
+        """
+        Evaluate the PDE residual.
+
+        Args:
+            x (torch.Tensor): x-coordinate points
+            y (torch.Tensor): y-coordinate points
+            u (torch.Tensor): Function value at (x,y)
+            u_x (torch.Tensor, optional): First derivative with respect to x
+            u_y (torch.Tensor, optional): First derivative with respect to y
+            u_xx (torch.Tensor, optional): Second derivative with respect to x
+            u_yy (torch.Tensor, optional): Second derivative with respect to y
+            u_xy (torch.Tensor, optional): Mixed derivative
+
+        Returns:
+            torch.Tensor: Residual of the PDE
+        """
+        raise NotImplementedError("Subclasses must implement __call__ method")
+
+    def boundary_condition(self, x, y):
+        """
+        Evaluate the boundary condition.
+
+        Args:
+            x (torch.Tensor): x-coordinate points
+            y (torch.Tensor): y-coordinate points
+
+        Returns:
+            torch.Tensor: Boundary condition values
+        """
+        raise NotImplementedError("Subclasses must implement boundary_condition method")
+
+class PoissonEquation(PartialDifferentialEquation):
+        """
+        Poisson Equation: ∇²u = f(x,y)
+        or u_xx + u_yy = f(x,y)
+        """
+
+        def __init__(self, source_term, name=None):
+            """
+            Initialize the Poisson equation.
+
+            Args:
+                source_term (callable): Right-hand side function f(x,y)
+                name (str, optional): Name of the PDE
+            """
+            if name is None:
+                name = "Poisson Equation: ∇²u = f(x,y)"
+            super(PoissonEquation, self).__init__(name=name)
+
+            self.source_term = source_term
+
+        def __call__(self, x, y, u, u_x=None, u_y=None, u_xx=None, u_yy=None, u_xy=None):
+            """
+            Evaluate the PDE residual.
+
+            Args:
+                x (torch.Tensor): x-coordinate points
+                y (torch.Tensor): y-coordinate points
+                u (torch.Tensor): Function value at (x,y)
+                u_x, u_y, u_xx, u_yy, u_xy: Derivatives (computed if not provided)
+
+            Returns:
+                torch.Tensor: Residual of the PDE
+            """
+            # Compute derivatives if not provided
+            if u_xx is None or u_yy is None:
+                if u_x is None:
+                    u_x = torch.autograd.grad(
+                        u, x, torch.ones_like(u), create_graph=True, retain_graph=True
+                    )[0]
+
+                if u_y is None:
+                    u_y = torch.autograd.grad(
+                        u, y, torch.ones_like(u), create_graph=True, retain_graph=True
+                    )[0]
+
+                u_xx = torch.autograd.grad(
+                    u_x, x, torch.ones_like(u_x), create_graph=True, retain_graph=True
+                )[0]
+
+                u_yy = torch.autograd.grad(
+                    u_y, y, torch.ones_like(u_y), create_graph=True, retain_graph=True
+                )[0]
+
+            # Compute source term
+            f = self.source_term(x, y)
+
+            # PDE residual: u_xx + u_yy - f(x,y) = 0
+            return u_xx + u_yy - f
+
+        def boundary_condition(self, x, y, boundary_type="dirichlet", boundary_value=0.0):
+            """
+            Evaluate the boundary condition.
+
+            Args:
+                x (torch.Tensor): x-coordinate points
+                y (torch.Tensor): y-coordinate points
+                boundary_type (str): Type of boundary condition
+                boundary_value (float or callable): Boundary value
+
+            Returns:
+                float or callable: Boundary condition value
+            """
+            if callable(boundary_value):
+                return boundary_value(x, y)
+            else:
+                return boundary_value

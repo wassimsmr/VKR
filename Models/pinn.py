@@ -44,3 +44,47 @@ class PINN(MLP):
         residual = dy_dt - ode_fn(x, y)
 
         return residual
+
+
+class PDE_PINN(PINN):
+    """PINN specifically modified for PDE problems."""
+
+    def __init__(self, input_dim=2, output_dim=1, hidden_dims=None, activation=torch.nn.Tanh):
+        super(PDE_PINN, self).__init__(input_dim, output_dim, hidden_dims, activation)
+
+    def compute_pde_residual(self, x, t, pde):
+        """
+        Compute the residual of the PDE.
+
+        Args:
+            x (torch.Tensor): Spatial points
+            t (torch.Tensor): Time points
+            pde (callable): Function that defines the PDE
+
+        Returns:
+            torch.Tensor: Residual of the PDE
+        """
+        x.requires_grad_(True)
+        t.requires_grad_(True)
+
+        # Create input tensor
+        input_tensor = torch.cat([x, t], dim=1)
+
+        # Forward pass
+        u = self.forward(input_tensor)
+
+        # Compute derivatives
+        u_x = torch.autograd.grad(
+            u, x, torch.ones_like(u), create_graph=True, retain_graph=True
+        )[0]
+
+        u_xx = torch.autograd.grad(
+            u_x, x, torch.ones_like(u_x), create_graph=True, retain_graph=True
+        )[0]
+
+        u_t = torch.autograd.grad(
+            u, t, torch.ones_like(u), create_graph=True, retain_graph=True
+        )[0]
+
+        # Return PDE residual
+        return pde(x, t, u, u_x, u_xx, u_t)
